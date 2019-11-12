@@ -1,11 +1,10 @@
 "use strict";
 const fs = require("fs");
 const rp = require("request-promise");
-const low = require("lowdb");
 const Twitter = require("twitter");
-const AWS = require('aws-sdk')
-AWS.config.update({region: 'us-east-1'});
-const ddb = new AWS.DynamoDB({apiVersion: '2012-08-10'});
+const AWS = require("aws-sdk");
+AWS.config.update({ region: "us-east-1" });
+const ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 
 /*const FileSync = require("lowdb/adapters/FileSync");
 const adapter = new FileSync("/tmp/db.json");
@@ -18,7 +17,7 @@ module.exports.update = async event => {
   const authOptions = properties.authRequest;
   let apiOptions = properties.apiRequest;
   let twitterOptions = properties.twitter;
-  const awsOptions = properties.AWS
+  const awsOptions = properties.AWS;
   const client = new Twitter({
     consumer_key: twitterOptions.consumer_key,
     consumer_secret: twitterOptions.consumer_secret,
@@ -26,8 +25,8 @@ module.exports.update = async event => {
     access_token_secret: twitterOptions.access_token_secret
   });
   function tweetSong(song) {
-    console.log(song.id)
-    /*const statusUpdate =
+    console.log(song.id);
+    const statusUpdate =
       song.artist +
       " - " +
       song.name +
@@ -40,51 +39,50 @@ module.exports.update = async event => {
       response
     ) {
       if (error) throw error;
-    });*/
+    });
   }
   function checkDatabase(song) {
-    song = {
+    let songRead = {
       TableName: awsOptions.dynamoDBTable,
       Key: {
-        "id": {S: song.id}
+        id: { S: song.id }
       },
       ProjectionExpression: "id",
       ConsistentRead: true
-    }
-    ddb.getItem(song, function(err, data) {
+    };
+    ddb.getItem(songRead, function(err, data) {
       if (err) {
         console.log("Error", err);
       } else {
-          if (data.Item != null) {
-            console.log("Data", data)
-            //console.log("Success", data.Item);
-            return true
-          }
-          else {
-            //Item not in db
-            console.log("Item not in database")
-            writeToDatabase(song)
-            tweetSong(song)    
-            //return false
-          }
+        if (data.Item != null) {
+          //console.log("Data", song.artist, song.name);
+          //console.log("Success", data.Item);
+          return true;
+        } else {
+          //Item not in db
+          console.log("Item not in database");
+          writeToDatabase(song);
+          tweetSong(song);
+          //return false
+        }
       }
-    });    
+    });
   }
   function writeToDatabase(song) {
     song = {
       TableName: awsOptions.dynamoDBTable,
       Item: {
-        "id": {S: song.id.toString()},
-        "name": {S: song.name},
-        "artist": {S: song.artist}
-      },
+        id: { S: song.id.toString() },
+        name: { S: song.name },
+        artist: { S: song.artist }
+      }
     };
     //song["ProjectionExpression"] = "id"
     ddb.putItem(song, function(err, data) {
       if (err) {
         console.log("Error", err);
       } else {
-        console.log("Success", data);
+        console.log("Success", song.id, song.name, song.artist);
       }
     });
   }
@@ -95,10 +93,10 @@ module.exports.update = async event => {
         id: value["track"]["id"],
         name: value["track"]["name"],
         artist: value["track"]["album"]["artists"][0]["name"]
-      }
-      checkDatabase(song)
+      };
+      checkDatabase(song);
     });
-  }
+  };
   async function makeRequest(options) {
     try {
       let response = await rp(options);
