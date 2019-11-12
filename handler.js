@@ -4,7 +4,7 @@ const rp = require("request-promise");
 const low = require("lowdb");
 const Twitter = require("twitter");
 const FileSync = require("lowdb/adapters/FileSync");
-const adapter = new FileSync("db.json");
+const adapter = new FileSync("/tmp/db.json");
 const db = low(adapter);
 
 let properties = fs.readFileSync("properties.json");
@@ -50,7 +50,7 @@ module.exports.update = async event => {
           .find({ id: song.id })
           .value()
       ) {
-        //console.log("Song Found", song.id)
+        console.log("Song Found", song.id)
       } else {
         console.log(song.id, "-", song.name, "-", song.artist);
         db.get("songs")
