@@ -6,3 +6,4 @@ jspm_packages
 .serverless
 
 properties.json
+database2.js
