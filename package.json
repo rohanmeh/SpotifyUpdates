@@ -1,0 +1,35 @@
+{
+  "name": "spotifyservice",
+  "version": "1.0.0",
+  "description": "Tweet out song links when there's an update to a Spotify playlist",
+  "main": "database.js",
+  "dependencies": {
+    "aws-sdk": "^2.570.0",
+    "lowdb": "^1.0.0",
+    "prettier": "^1.19.1",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5",
+    "twitter": "^1.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rohanmeh/SpotifyUpdates.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rohanmeh/SpotifyUpdates/issues"
+  },
+  "homepage": "https://github.com/rohanmeh/SpotifyUpdates#readme"
+}

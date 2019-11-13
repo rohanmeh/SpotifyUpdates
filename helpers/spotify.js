@@ -1,4 +1,4 @@
-const rp = require("request-promise");
+const rp = require('request-promise');
 
 async function makeRequest(options) {
   try {
@@ -6,10 +6,10 @@ async function makeRequest(options) {
     response = JSON.parse(response);
     return response;
   } catch (err) {
-    console.log("Request failed", err);
+    console.log('Request failed', err);
   }
 }
 
 module.exports = {
-  makeRequest
+  makeRequest,
 };
