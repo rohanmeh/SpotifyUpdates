@@ -1,17 +1,9 @@
 "use strict";
 const fs = require("fs");
-const rp = require("request-promise");
-//const Twitter = require("twitter");
 const Twitter = require("./helpers/twitter");
 const Spotify = require("./helpers/spotify");
 const Database = require("./helpers/database");
-const AWS = require("aws-sdk");
-AWS.config.update({ region: "us-east-1" });
-const ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
 
-/*const FileSync = require("lowdb/adapters/FileSync");
-const adapter = new FileSync("/tmp/db.json");
-const db = low(adapter);*/
 
 let properties = fs.readFileSync("properties.json");
 properties = JSON.parse(properties);
