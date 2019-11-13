@@ -3,7 +3,7 @@ const fs = require("fs");
 const rp = require("request-promise");
 //const Twitter = require("twitter");
 const Twitter = require("./helpers/twitter")
-
+const Spotify = require("./helpers/spotify")
 const AWS = require("aws-sdk");
 AWS.config.update({ region: "us-east-1" });
 const ddb = new AWS.DynamoDB({ apiVersion: "2012-08-10" });
@@ -19,32 +19,8 @@ properties = JSON.parse(properties);
 module.exports.update = async event => {
   const authOptions = properties.authRequest;
   let apiOptions = properties.apiRequest;
-  let twitterOptions = properties.twitter;
   const awsOptions = properties.AWS;
 
-  /*const client = new Twitter({
-    consumer_key: twitterOptions.consumer_key,
-    consumer_secret: twitterOptions.consumer_secret,
-    access_token_key: twitterOptions.access_token,
-    access_token_secret: twitterOptions.access_token_secret
-  });
-  function tweetSong(song) {
-    console.log(song.id);
-    const statusUpdate =
-      song.artist +
-      " - " +
-      song.name +
-      " " +
-      "https://open.spotify.com/track/" +
-      song.id;
-    client.post("statuses/update", { status: statusUpdate }, function(
-      error,
-      tweet,
-      response
-    ) {
-      if (error) throw error;
-    });
-  }*/
   function checkDatabase(song) {
     let songRead = {
       TableName: awsOptions.dynamoDBTable,
@@ -59,8 +35,6 @@ module.exports.update = async event => {
         console.log("Error", err);
       } else {
         if (data.Item != null) {
-          //console.log("Data", song.artist, song.name);
-          //console.log("Success", data.Item);
           return true;
         } else {
           //Item not in db
@@ -81,16 +55,16 @@ module.exports.update = async event => {
         artist: { S: song.artist }
       }
     };
-    //song["ProjectionExpression"] = "id"
     ddb.putItem(song, function(err, data) {
       if (err) {
         console.log("Error", err);
       } else {
-        console.log("Success", song.id, song.name, song.artist);
+        console.log(song)
+        console.log("Success", song.Item.id, song.Item.name, song.Item.artist);
       }
     });
   }
-  var processResponse = async function(response) {
+  function processResponse(response) {
     const songs = response.items;
     songs.forEach(function(value) {
       let song = {
@@ -101,7 +75,7 @@ module.exports.update = async event => {
       checkDatabase(song);
     });
   };
-  async function makeRequest(options) {
+  /*async function makeRequest(options) {
     try {
       let response = await rp(options);
       response = JSON.parse(response);
@@ -109,16 +83,16 @@ module.exports.update = async event => {
     } catch (err) {
       console.log("Request failed", err);
     }
-  }
-  const access_token = await makeRequest(authOptions);
+  }*/
+  const access_token = await Spotify.makeRequest(authOptions);
   apiOptions.headers.Authorization = "Bearer " + access_token.access_token;
-  let apiResponse = await makeRequest(apiOptions);
+  let apiResponse = await Spotify.makeRequest(apiOptions);
   const requests = Math.floor(apiResponse.total / 100);
   processResponse(apiResponse);
   for (let i = 0; i < requests; i++) {
     const offset = (i + 1) * 100;
     apiOptions.url = apiOptions.url + "?offset=" + offset;
-    apiResponse = await makeRequest(apiOptions);
+    apiResponse = await Spotify.makeRequest(apiOptions);
     processResponse(apiResponse);
   }
 };
