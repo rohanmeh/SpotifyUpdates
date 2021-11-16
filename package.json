@@ -4,7 +4,7 @@
   "description": "Tweet out song links when there's an update to a Spotify playlist",
   "main": "database.js",
   "dependencies": {
-    "aws-sdk": "^2.570.0",
+    "aws-sdk": "^2.814.0",
     "lowdb": "^1.0.0",
     "prettier": "^1.19.1",
     "request": "^2.88.0",
